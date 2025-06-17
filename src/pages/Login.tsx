@@ -1,7 +1,10 @@
 import { type FormEvent } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useHandleChange } from '../hooks/useHandleChange'
 import { isEmail, isLessThanLength, isMoreThanLength } from '../utils/validators'
 import { Button, TextInput } from '../ui'
+import type { PrivateRouteState } from '../components/PrivateRoute'
+import { useAuth } from '../context/AuthProvider'
 import './style.css'
 
 export interface SiginValues {
@@ -14,6 +17,11 @@ export interface SiginValues {
 // }
 
 const Login = () => {
+    const auth = useAuth()
+    const navigate = useNavigate()
+    const location = useLocation() 
+    const state = location.state as PrivateRouteState
+
     const validators = {
         email: [isEmail()],
         password: [isMoreThanLength(5), isLessThanLength(10)]
@@ -24,9 +32,13 @@ const Login = () => {
         password: '',
     }, validators)
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement | undefined>) => {
         e.preventDefault()
-        console.log({ values })
+        const formData = new FormData(e.currentTarget)
+        const userName = formData.get('email') as string
+        auth?.signin(userName, () => {
+            navigate(state?.from ?? '/')
+        })
     }
 
     return (

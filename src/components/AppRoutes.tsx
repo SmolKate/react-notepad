@@ -6,13 +6,13 @@ import { Home } from '../pages/Home'
 import { Login } from '../pages/Login'
 import { Registration } from '../pages/Registration'
 import { NotFound } from '../pages/NotFound'
-// import PrivateRoute from './PrivateRoute'
+import PrivateRoute from './PrivateRoute'
 
 const AppRoutes = () => {
     return (
         <>
             <Routes>
-                <Route path={appPaths.home} element={<Home />} />
+                <Route path={appPaths.home} element={<PrivateRoute><Home /></PrivateRoute>} />
                 <Route path={appPaths.login} element={<Login />} />
                 <Route path={appPaths.registration} element={<Registration />} />
                 <Route path="*" element={<NotFound />} />
