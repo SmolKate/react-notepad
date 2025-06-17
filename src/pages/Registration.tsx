@@ -1,6 +1,8 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { isEmail, isLessThanLength, isMoreThanLength } from '../utils/validators'
 import { useHandleChange } from '../hooks/useHandleChange'
+import { db } from '../model/db'
 import { TextInput, Button } from '../ui'
 import './style.css'
 
@@ -11,13 +13,17 @@ export interface SignupValues {
     repeat_password: string
 }
 
-// interface Signup {
-//     onSubmit: (value: SignupValues) => void
-// }
-
 const Registration = () => {
 
     const [passwordError, setPasswordError] = useState('')
+    const [emailError, setEmailError] = useState('')
+    const [error, setError] = useState('')
+    const users = useLiveQuery(
+        async () => {
+        const users = await db.user.toArray()
+        return users
+        }, []
+    )
 
     const validators = {
         name: [isMoreThanLength(5), isLessThanLength(100)],
@@ -34,14 +40,26 @@ const Registration = () => {
     }, validators)
 
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const { password, repeat_password} = values
+        const { name, email, password, repeat_password} = values
         if (password && repeat_password && password !==repeat_password) {
             setPasswordError('Пароли должны совпадать')
             return
         }
-        console.log({ values })
+
+        const hasEmail = users && users.filter((item) => item.email === email.toLowerCase()).length > 0
+
+        if(hasEmail) {
+            setEmailError('Пользователь с таким email уже существует')
+            return
+        }
+        
+        try {
+            await db.user.add({ name, email: email.toLowerCase(), password })
+        } catch (e) {
+            setError('Не удалось зарегистрировать. Попробуйте позжею')
+        }
     }
 
     const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +84,7 @@ const Registration = () => {
                 label='Email'
                 onChange={handleChange}
                 value={values.email}
-                error={errors?.email}
+                error={errors?.email || emailError}
             />
             <TextInput
                 name='password'
@@ -84,6 +102,7 @@ const Registration = () => {
                 value={values.repeat_password}
                 error={errors?.repeat_password || passwordError}
             />
+            <div className="registration-error">{ error }</div>
             <Button type="submit">Ок</Button>
         </form>
     )

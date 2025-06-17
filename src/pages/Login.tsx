@@ -12,10 +12,6 @@ export interface SiginValues {
     password: string,
 }
 
-// interface Signin {
-//     onSubmit: (value: SiginValues) => void
-// }
-
 const Login = () => {
     const auth = useAuth()
     const navigate = useNavigate()
@@ -35,10 +31,15 @@ const Login = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement | undefined>) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
-        const userName = formData.get('email') as string
-        auth?.signin(userName, () => {
+        const userEmail = formData.get('email') as string
+        const userPassword = formData.get('password') as string
+        auth?.signin(userEmail.toLowerCase(), userPassword, () => {
             navigate(state?.from ?? '/')
         })
+    }
+
+    const handleRegistrationClick = () => {
+        navigate('/registration')
     }
 
     return (
@@ -61,6 +62,7 @@ const Login = () => {
                 error={errors?.password}
             />
             <Button type="submit">Войти</Button>
+            <Button onClick={handleRegistrationClick}>Зарегистрироваться</Button>
         </form>
     )
 }

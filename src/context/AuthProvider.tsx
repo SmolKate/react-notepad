@@ -1,8 +1,10 @@
 import { createContext, useContext, useState } from 'react'
+import { db } from '../model/db'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 interface AuthContext {
-    userId: string | null
-    signin: (newUserId: string, callback?: VoidFunction) => void
+    userName: string | null
+    signin: (userEmail: string, userPassword: string, callback?: VoidFunction) => void
     signout: (callback?: VoidFunction) => void
 }
 
@@ -13,20 +15,29 @@ const useAuth = () => {
 }
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [userId, setUserId] = useState(localStorage.getItem('user'))
+    const [userName, setUserName] = useState<string | null>(null)
 
-    const signin = (newUserId: string, callback?: VoidFunction) => {
-        setUserId(newUserId)
-        localStorage.setItem('user', newUserId)
-        callback?.()
+    const users = useLiveQuery(
+        async () => {
+        const users = await db.user.toArray()
+        return users
+        }, []
+    )
+
+    const signin = (userEmail: string, userPassword: string, callback?: VoidFunction) => {
+        const userIndex = users?.findIndex((user) => user.email === userEmail && user.password === userPassword)
+        if (users && userIndex !== -1 && userIndex !== undefined) {
+            callback?.()
+            setUserName(users[userIndex].name)
+        }
     }
     const signout = (callback?: VoidFunction) => {
-        setUserId(null)
+        setUserName(null)
         localStorage.removeItem('user')
         callback?.()
     }
     const value = {
-        userId,
+        userName,
         signin,
         signout,
     }

@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }: {children: React.ReactNode}) => {
     const auth = useAuth()
     const location = useLocation()
 
-    if (!auth?.userId) return <Navigate to={appPaths.login} state={{ from: location.pathname }} replace/>
+    if (!auth?.userName) return <Navigate to={appPaths.login} state={{ from: location.pathname }} replace/>
     return children
 }
 
