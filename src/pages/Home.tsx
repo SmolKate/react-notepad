@@ -2,22 +2,23 @@ import { useActionState, useState } from 'react'
 import { useAuth } from '../context/AuthProvider'
 import { Button, TextInput } from '../ui'
 import { db } from '../model/db'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 const Home = () => {
     const auth = useAuth()
-    const notes = [
-        {
-            id: 1,
-            title: "название заметки",
-            content: "содержимое заметки",
-        }
-    ]
+
     const initialState = {
         error: '',
         title: '',
         content: ''
     }
 
+    const notes = useLiveQuery(
+        async () => {
+        const notes = await db.note.toArray()
+        return notes
+        }, []
+    )
     const [isCreateMode, setCreateMode] = useState(false)
     const [state, actionFn, isPending] = useActionState(submitAction, initialState)
 
