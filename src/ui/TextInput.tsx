@@ -1,11 +1,12 @@
 import TextField, { type TextFieldProps } from "@mui/material/TextField"
 
 type TextInput = Omit<TextFieldProps, 'helperText' | 'error' > & {
-    error: string | undefined
+    error?: string | undefined
+    isError?: boolean
 }
 
 const TextInput = (props: TextInput) => {
-    const { error, ...otherProps} = props
+    const { error, isError, ...otherProps} = props
     
     return (
         <TextField
@@ -13,7 +14,7 @@ const TextInput = (props: TextInput) => {
             size="small"
             margin="normal"
             color="primary"
-            error={Boolean(error)}
+            error={isError || Boolean(error)}
             helperText={error}
             {...otherProps}
         />

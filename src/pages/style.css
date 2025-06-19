@@ -1,12 +1,35 @@
 .login-form, .registration-form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
     width: 300px;
 }
 
-.registration-erro {
+.note-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    width: calc(100vw - 64px);
+}
+
+.note-error, .registration-error {
     color: #d32f2f;
     font-size: 16px;
     line-height: 22px;
+}
+
+.note-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.note-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btns {
+    display: flex;
+    gap: 16px;
 }

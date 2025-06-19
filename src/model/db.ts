@@ -4,6 +4,7 @@ interface Note {
   id: number
   title: string
   content: string
+  userId: number
 }
 
 interface User {
@@ -20,7 +21,7 @@ const db = new Dexie('NotesDatabase') as Dexie & {
 
 // Schema declaration:
 db.version(1).stores({
-  note: '++id, title, content', // primary key "id" (for the runtime!)
+  note: '++id, userId, title, content', // primary key "id" (for the runtime!)
   user: '++id, name, email, password'
 })
 
