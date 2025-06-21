@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Snackbar from '@mui/material/Snackbar'
+import Markdown from 'marked-react';
 import { useCurrentNote } from '../../context/CurrentNoteProvider'
 import { Button } from '../../ui'
 import { NoteFormPopup } from '../NoteFormPopup'
@@ -35,7 +36,8 @@ const Workspace = () => {
             {contextCurrentNote?.currentNote && (
                 <>
                     <h4>Заголовок: {title}</h4>
-                    <div className="workspace-note-content">Текст: {content}</div>
+                    <div>Текст:</div>
+                    <div className="workspace-note-content"><Markdown>{content}</Markdown></div>
                     <div className="btns">
                         <Button onClick={() => onEditClick()}>Изменить</Button>
                         <Button onClick={onDeleteClick}>Удалить</Button>
