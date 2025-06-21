@@ -7,12 +7,22 @@ import { Login } from '../pages/Login'
 import { Registration } from '../pages/Registration'
 import { NotFound } from '../pages/NotFound'
 import PrivateRoute from './PrivateRoute'
+import { CurrentNoteProvider } from '../context/CurrentNoteProvider'
 
 const AppRoutes = () => {
     return (
         <>
             <Routes>
-                <Route path={appPaths.home} element={<PrivateRoute><Home /></PrivateRoute>} />
+                <Route
+                    path={appPaths.home}
+                    element={
+                    <PrivateRoute>
+                        <CurrentNoteProvider>
+                            <Home />
+                        </CurrentNoteProvider>
+                    </PrivateRoute>
+                    }
+                />
                 <Route path={appPaths.login} element={<Login />} />
                 <Route path={appPaths.registration} element={<Registration />} />
                 <Route path="*" element={<NotFound />} />

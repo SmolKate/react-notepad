@@ -2,36 +2,38 @@ import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
 import { Button, TextInput } from "../../ui"
 import Snackbar from "@mui/material/Snackbar"
-import { db } from "../../model/db"
+import { db, type Note } from "../../model/db"
 import { useActionState, useState } from "react"
 import { useAuth } from "../../context/AuthProvider"
-
-type NoteFormPopup = NoteFormPopupForEdit | NoteFormPopupForCreate
+import { useCurrentNote } from "../../context/CurrentNoteProvider"
 
 interface InitialFormState {
-        error?: string
-        title: string
-        content: string
-    }
-
-interface NoteFormPopupForEdit {
-    isEditMode: boolean
-    noteId: number
-    callback?: () => void
-    initialState: InitialFormState
+    error?: string
+    title: string
+    content: string
 }
-
-interface NoteFormPopupForCreate {
-    isCreateMode: boolean
+interface NoteFormPopup {
+    isCreateMode?: boolean
+    isEditMode?: boolean
     callback?: () => void
     initialState: InitialFormState
 }
 
 const NoteFormPopup = (props: NoteFormPopup) => {
-    const { isEditMode, isCreateMode, noteId, callback, initialState} = props
+    const { isEditMode, isCreateMode, callback} = props
 
     const auth = useAuth()
     const [snackbarText, setSnackbarText] = useState('')
+
+    const contextCurrentNote = useCurrentNote()
+    const { title, content, id } = contextCurrentNote?.currentNote ?? {}
+
+
+    const initialState = {
+        title: title ?? '',
+        content: content ?? '',
+    }
+
 
     const submitAction = async (prevState: InitialFormState, formData: FormData) => {
         const noteTitle = formData.get('title') as string
@@ -43,11 +45,16 @@ const NoteFormPopup = (props: NoteFormPopup) => {
         }
 
         try {
-            if (isEditMode) {
-                await db.note.update(noteId, {
+            if (isEditMode && id) {
+                await db.note.update(id, {
                     title: noteTitle,
                     content: noteContent,
                 })
+                contextCurrentNote?.setCurrentNote?.((prev) => ({
+                    ...prev,
+                    title: noteTitle,
+                    content: noteContent
+                } as Note))
             } else {
                 await db.note.add({
                     title: noteTitle,
@@ -62,29 +69,28 @@ const NoteFormPopup = (props: NoteFormPopup) => {
         }
     }
 
-    const [state, actionFn, isPending] = useActionState(submitAction, initialState)
-
+    const [state, actionFn, isPending] = useActionState<InitialFormState, FormData>(submitAction, initialState)
 
     const handleClose = () => {
-        console.log('handleClose')
+        callback?.()
     }
 
     return (
-        <Dialog onClose={handleClose} open={isCreateMode || isEditMode}>
+        <Dialog onClose={handleClose} open={isCreateMode || isEditMode || false}>
             <DialogTitle>{isEditMode ? 'Изменить заметку' : 'Создать заметку'}</DialogTitle>
             <form action={actionFn} className="note-form">
                 <TextInput
                     name='title'
                     type='text'
                     label='Название заметки'
-                    defaultValue={state.title}
+                    defaultValue={isEditMode ? initialState.title : ''}
                     isError={Boolean(state.error)}
                 />
                 <TextInput
                     name='content'
                     type='text'
                     label='Содержание'
-                    defaultValue={state.content}
+                    defaultValue={isEditMode ? initialState.content : ''}
                     isError={Boolean(state.error)}
                     multiline
                     rows={10}
