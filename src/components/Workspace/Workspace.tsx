@@ -4,10 +4,12 @@ import Markdown from 'marked-react';
 import { useCurrentNote } from '../../context/CurrentNoteProvider'
 import { Button } from '../../ui'
 import { NoteFormPopup } from '../NoteFormPopup'
+import { ItemDeletePopup } from '../ItemDeletePopup'
 import './style.css'
 
 const Workspace = () => {
     const [isEditMode, setEditMode] = useState(false)
+    const [openDeletePopup, setOpenDeletePopup] = useState(false)
     const [snackbarText, setSnackbarText] = useState('')
     const contextCurrentNote = useCurrentNote()
 
@@ -22,12 +24,8 @@ const Workspace = () => {
         setEditMode(true)
     }
 
-    const onDeleteClick = async () => {
-        const errorCallback = () => {
-            setSnackbarText('Не удалось выполнить операцию. Попробуйте позже.')
-        }
-        contextCurrentNote?.deleteNote(errorCallback)
-
+    const errorCallback = () => {
+        setSnackbarText('Не удалось выполнить операцию. Попробуйте позже.')
     }
     
     return (
@@ -40,7 +38,7 @@ const Workspace = () => {
                     <div className="workspace-note-content"><Markdown>{content}</Markdown></div>
                     <div className="btns">
                         <Button onClick={() => onEditClick()}>Изменить</Button>
-                        <Button onClick={onDeleteClick}>Удалить</Button>
+                        <Button onClick={() => setOpenDeletePopup(true)}>Удалить</Button>
                     </div>
                     <NoteFormPopup
                         initialState={initialState}
@@ -52,6 +50,11 @@ const Workspace = () => {
                         autoHideDuration={5000}
                         onClose={() => setSnackbarText('')}
                         message={snackbarText}
+                    />
+                    <ItemDeletePopup
+                        errorCallback={errorCallback}
+                        openDeletePopup={openDeletePopup}
+                        setOpenDeletePopup={setOpenDeletePopup}
                     />
                 </>
             )}

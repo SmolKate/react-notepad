@@ -1,11 +1,11 @@
-import Dialog from "@mui/material/Dialog"
-import DialogTitle from "@mui/material/DialogTitle"
-import { Button, TextInput } from "../../ui"
-import Snackbar from "@mui/material/Snackbar"
-import { db, type Note } from "../../model/db"
-import { useActionState, useState } from "react"
-import { useAuth } from "../../context/AuthProvider"
-import { useCurrentNote } from "../../context/CurrentNoteProvider"
+import { useActionState, useState } from 'react'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import Snackbar from '@mui/material/Snackbar'
+import { Button, TextInput } from '../../ui'
+import { db, type Note } from '../../model/db'
+import { useAuth } from '../../context/AuthProvider'
+import { useCurrentNote } from '../../context/CurrentNoteProvider'
 
 interface InitialFormState {
     error?: string
@@ -61,6 +61,8 @@ const NoteFormPopup = (props: NoteFormPopup) => {
                     content: noteContent,
                     userId: Number(auth.userId),
                 })
+                const newNote = await db.note.where({ userId: Number(auth.userId) }).toArray()
+                contextCurrentNote?.setCurrentNote?.(newNote[newNote.length - 1])
             }
             callback?.()
             return initialState

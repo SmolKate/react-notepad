@@ -19,6 +19,7 @@ const CurrentNoteProvider = ({ children }: { children: React.ReactNode }) => {
     const deleteNote = async (errorCallback: (e?: unknown) => void) => {
         try {
             if (currentNote) await db.note.delete(currentNote.id)
+            setCurrentNote(null)
         } catch (e) {
             errorCallback?.(e)
         }
