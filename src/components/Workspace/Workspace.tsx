@@ -36,13 +36,14 @@ const Workspace = () => {
         <div className="workspace">
             {noteState?.currentNote && !isFilterredMode && (
                 <>
-                    <h4>Заголовок: {title}</h4>
-                    <div>Текст:</div>
-                    <div className="workspace-note-content"><Markdown>{content}</Markdown></div>
                     <div className="btns">
                         <Button onClick={() => onEditClick()}>Изменить</Button>
                         <Button onClick={() => setOpenDeletePopup(true)}>Удалить</Button>
                     </div>
+                    <h4>Заголовок: {title}</h4>
+                    <div>Текст:</div>
+                    <div className="workspace-note-content"><Markdown>{content}</Markdown></div>
+            
                     <NoteFormPopup
                         initialState={initialState}
                         isEditMode={isEditMode}

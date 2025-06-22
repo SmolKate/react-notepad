@@ -1,4 +1,4 @@
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import Snackbar from '@mui/material/Snackbar'
@@ -6,6 +6,8 @@ import { Button, TextInput } from '../../ui'
 import { db, type Note } from '../../model/db'
 import { useAuth } from '../../context/AuthProvider'
 import { useNote } from '../../context/NoteProvider'
+import { useDebounce } from '../../hooks/useDebounce'
+import { useHandleChange } from '../../hooks/useHandleChange'
 
 interface InitialFormState {
     error?: string
@@ -28,12 +30,12 @@ const NoteFormPopup = (props: NoteFormPopup) => {
     const noteState = useNote()
     const { title, content, id } = noteState?.currentNote ?? {}
 
+    const {values, handleChange} = useHandleChange<{title?: string, content?: string}>({ title, content })
 
     const initialState = {
         title: title ?? '',
         content: content ?? '',
     }
-
 
     const submitAction = async (prevState: InitialFormState, formData: FormData) => {
         const noteTitle = formData.get('title') as string
@@ -55,7 +57,7 @@ const NoteFormPopup = (props: NoteFormPopup) => {
                     title: noteTitle,
                     content: noteContent
                 } as Note))
-            } else {
+            } else if (isCreateMode) {
                 await db.note.add({
                     title: noteTitle,
                     content: noteContent,
@@ -72,9 +74,36 @@ const NoteFormPopup = (props: NoteFormPopup) => {
     }
 
     const [state, actionFn, isPending] = useActionState<InitialFormState, FormData>(submitAction, initialState)
+    const debouncedTitle = useDebounce<string | undefined>(values.title, 1000)
+    const debouncedContent = useDebounce<string | undefined>(values.content, 1000)
+
+    useEffect( () => {
+        const updateNote = async () => {
+            if (isEditMode && id && (debouncedTitle || debouncedContent)) {
+                try {
+                    await db.note.update(id, {
+                        title: debouncedTitle,
+                        content: debouncedContent,
+                    })
+                } catch (e) {
+                    console.error(e)
+                } 
+            }
+        }
+
+        updateNote()
+        
+    }, [debouncedTitle, debouncedContent])
 
     const handleClose = () => {
         callback?.()
+        if (isEditMode) {
+            noteState?.setCurrentNote?.((prev) => ({
+                ...prev,
+                title: values.title,
+                content: values.content
+            } as Note))
+        }
     }
 
     return (
@@ -85,6 +114,7 @@ const NoteFormPopup = (props: NoteFormPopup) => {
                     name='title'
                     type='text'
                     label='Название заметки'
+                    onChange={handleChange}
                     defaultValue={isEditMode ? initialState.title : ''}
                     isError={Boolean(state.error)}
                 />
@@ -92,6 +122,7 @@ const NoteFormPopup = (props: NoteFormPopup) => {
                     name='content'
                     type='text'
                     label='Содержание'
+                    onChange={handleChange}
                     defaultValue={isEditMode ? initialState.content : ''}
                     isError={Boolean(state.error)}
                     multiline

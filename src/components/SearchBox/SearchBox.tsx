@@ -7,15 +7,15 @@ import { useDebounce } from '../../hooks/useDebounce'
 const SearchBox = () => {
     const noteState = useNote()
     const {values, handleChange} = useHandleChange<{search: string}>({search: ''})
-    const debuncedValue = useDebounce<string>(values.search, 500)
+    const debouncedValue = useDebounce<string>(values.search, 500)
 
     useEffect(() => {
-        if (debuncedValue) {
-            noteState?.filterNotes((note) => note.title.match(debuncedValue) || note.content.match(debuncedValue))
+        if (debouncedValue) {
+            noteState?.filterNotes((note) => note.title.match(debouncedValue) || note.content.match(debouncedValue))
         } else {
             noteState?.filterNotes(() => false)
         }
-    }, [debuncedValue])
+    }, [debouncedValue])
 
     const handleFocus = () => {
         if(values.search) noteState?.filterNotes((note) => note.title.match(values.search) || note.content.match(values.search))
