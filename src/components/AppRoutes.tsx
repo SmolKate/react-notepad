@@ -7,7 +7,7 @@ import { Login } from '../pages/Login'
 import { Registration } from '../pages/Registration'
 import { NotFound } from '../pages/NotFound'
 import PrivateRoute from './PrivateRoute'
-import { CurrentNoteProvider } from '../context/CurrentNoteProvider'
+import { NoteProvider } from '../context/NoteProvider'
 
 const AppRoutes = () => {
     return (
@@ -17,9 +17,9 @@ const AppRoutes = () => {
                     path={appPaths.home}
                     element={
                     <PrivateRoute>
-                        <CurrentNoteProvider>
+                        <NoteProvider>
                             <Home />
-                        </CurrentNoteProvider>
+                        </NoteProvider>
                     </PrivateRoute>
                     }
                 />

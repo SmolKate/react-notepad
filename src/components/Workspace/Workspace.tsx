@@ -1,19 +1,20 @@
 import { useState } from 'react'
 import Snackbar from '@mui/material/Snackbar'
 import Markdown from 'marked-react';
-import { useCurrentNote } from '../../context/CurrentNoteProvider'
+import { useNote } from '../../context/NoteProvider'
 import { Button } from '../../ui'
 import { NoteFormPopup } from '../NoteFormPopup'
 import { ItemDeletePopup } from '../ItemDeletePopup'
 import './style.css'
+import { NoteItem } from '../NoteItem'
 
 const Workspace = () => {
     const [isEditMode, setEditMode] = useState(false)
     const [openDeletePopup, setOpenDeletePopup] = useState(false)
     const [snackbarText, setSnackbarText] = useState('')
-    const contextCurrentNote = useCurrentNote()
+    const noteState = useNote()
 
-    const { title, content } = contextCurrentNote?.currentNote ?? {}
+    const { title, content } = noteState?.currentNote ?? {}
 
     const initialState = {
         title: title ?? '',
@@ -27,11 +28,13 @@ const Workspace = () => {
     const errorCallback = () => {
         setSnackbarText('Не удалось выполнить операцию. Попробуйте позже.')
     }
+
+    const filterredNotes = noteState?.filterredNotes
+    const isFilterredMode = filterredNotes && filterredNotes.length > 0
     
     return (
         <div className="workspace">
-            Workspace
-            {contextCurrentNote?.currentNote && (
+            {noteState?.currentNote && !isFilterredMode && (
                 <>
                     <h4>Заголовок: {title}</h4>
                     <div>Текст:</div>
@@ -58,6 +61,7 @@ const Workspace = () => {
                     />
                 </>
             )}
+            {isFilterredMode && filterredNotes?.map(note => <NoteItem note={note} key={note.id} isWorkspace/>)}
         </div>
     )
 }

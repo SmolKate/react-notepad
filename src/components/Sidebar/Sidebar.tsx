@@ -1,25 +1,13 @@
-import { useLiveQuery } from 'dexie-react-hooks'
-import { db, type Note } from '../../model/db'
 import { NoteItem } from '../../components/NoteItem'
+import { useNote } from '../../context/NoteProvider'
 import './style.css'
 
-interface Sidebar {
-    userId : string
-}
-
-const Sidebar = ({ userId }: Sidebar) => {
-    
-    const notes = useLiveQuery(
-        async () => {
-        let notes = [] as Note[]
-        if (userId) notes = await db.note.where({ userId: Number(userId) }).toArray()
-        return notes
-        }, []
-    )
+const Sidebar = () => {
+    const noteState = useNote()
 
     return (
         <div className="sidebar">
-            {notes?.map(note => <NoteItem note={note} />)}
+            {noteState?.notes?.map(note => <NoteItem note={note} key={note.id} />)}
         </div>
     )
 }

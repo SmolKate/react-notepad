@@ -15,6 +15,12 @@
     }
 }
 
+.note-item-workspace {
+    width: 100%;
+    border: none;
+    margin: 15px;
+}
+
 .note-item:last-child {
     border: none;
     padding-bottom: 0;

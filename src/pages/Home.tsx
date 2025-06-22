@@ -4,12 +4,12 @@ import { Sidebar } from '../components/Sidebar'
 import { Workspace } from '../components/Workspace'
 import { NoteFormPopup } from '../components/NoteFormPopup'
 import { useState } from 'react'
+import { SearchBox } from '../components/SearchBox'
 
 const Home = () => {
     const auth = useAuth()
     const [isCreateMode, setCreateMode] = useState(false)
     
-    const userId = auth?.userId as string
     const initialState = {
         error: '',
         title: '',
@@ -25,9 +25,10 @@ const Home = () => {
             <div className="menu">
                 <Button size="small" onClick={onAddNoteClick}>Добавить заметку</Button>
                 <Button size="small" onClick={() => auth?.signout()}>Выйти</Button>
+                <SearchBox />
             </div>
             <div className="content">
-                <Sidebar userId={userId} />
+                <Sidebar />
                 <Workspace />
             </div>
             <NoteFormPopup isCreateMode={isCreateMode} callback={() => setCreateMode(false)} initialState={initialState} />

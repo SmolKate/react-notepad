@@ -5,21 +5,23 @@ const useHandleChange = <T>(initialValues: T, validators?: {[key: string]: ((val
     const [errors, setErrors] = useState<{[key: string]: string | undefined} | null>(null)
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>, value: string) => {
-        const target = e.target as HTMLInputElement
+        const target = e?.target as HTMLInputElement
         
         setValues(prevState => ({
             ...prevState,
             [target.name]: value ?? target.value
         }))
 
-        const inputValidators = validators?.[target.name] ?? []
-        for (let i = 0; i < inputValidators.length; i++) {
-            const error = inputValidators[i](target.value)
-            setErrors(prevState => ({
-                ...prevState,
-                [target.name]: error
-            }))
-            if (error) break
+        if (validators) {
+            const inputValidators = validators?.[target.name] ?? []
+            for (let i = 0; i < inputValidators.length; i++) {
+                const error = inputValidators[i](target.value)
+                setErrors(prevState => ({
+                    ...prevState,
+                    [target.name]: error
+                }))
+                if (error) break
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import { Button } from '../../ui'
-import { useCurrentNote } from '../../context/CurrentNoteProvider'
+import { useNote } from '../../context/NoteProvider'
 import './style.css'
 
 interface ItemDeletePopup {
@@ -11,10 +11,10 @@ interface ItemDeletePopup {
 }
 
 const ItemDeletePopup = ({ errorCallback, openDeletePopup, setOpenDeletePopup }: ItemDeletePopup) => {
-    const contextCurrentNote = useCurrentNote()
+    const noteState = useNote()
 
     const handleItemDelete = async () => {
-        contextCurrentNote?.deleteNote(errorCallback)
+        noteState?.deleteNote(errorCallback)
         setOpenDeletePopup(false)
     }
     

@@ -5,7 +5,7 @@ import Snackbar from '@mui/material/Snackbar'
 import { Button, TextInput } from '../../ui'
 import { db, type Note } from '../../model/db'
 import { useAuth } from '../../context/AuthProvider'
-import { useCurrentNote } from '../../context/CurrentNoteProvider'
+import { useNote } from '../../context/NoteProvider'
 
 interface InitialFormState {
     error?: string
@@ -25,8 +25,8 @@ const NoteFormPopup = (props: NoteFormPopup) => {
     const auth = useAuth()
     const [snackbarText, setSnackbarText] = useState('')
 
-    const contextCurrentNote = useCurrentNote()
-    const { title, content, id } = contextCurrentNote?.currentNote ?? {}
+    const noteState = useNote()
+    const { title, content, id } = noteState?.currentNote ?? {}
 
 
     const initialState = {
@@ -50,7 +50,7 @@ const NoteFormPopup = (props: NoteFormPopup) => {
                     title: noteTitle,
                     content: noteContent,
                 })
-                contextCurrentNote?.setCurrentNote?.((prev) => ({
+                noteState?.setCurrentNote?.((prev) => ({
                     ...prev,
                     title: noteTitle,
                     content: noteContent
@@ -62,7 +62,7 @@ const NoteFormPopup = (props: NoteFormPopup) => {
                     userId: Number(auth.userId),
                 })
                 const newNote = await db.note.where({ userId: Number(auth.userId) }).toArray()
-                contextCurrentNote?.setCurrentNote?.(newNote[newNote.length - 1])
+                noteState?.setCurrentNote?.(newNote[newNote.length - 1])
             }
             callback?.()
             return initialState
