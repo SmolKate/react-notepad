@@ -40,3 +40,9 @@
     display: flex;
     flex: 1;
 }
+
+.login-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

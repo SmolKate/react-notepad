@@ -1,0 +1,54 @@
+{
+  "name": "Note app",
+  "short_name": "NoteApp",
+  "start_url": "/index.html",
+  "id": "/index.html",
+  "display": "standalone",
+  "description": "A description for your application",
+  "lang": " The default language of your application",
+  "dir": "auto",
+  "theme_color": "#B4B7E4",
+  "background_color": "#B4B7E4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "public/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "public/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "public/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "public/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://www.pwabuilder.com/assets/screenshots/screen1.png",
+      "sizes": "1630x918",
+      "type": "image/png",
+      "description": "A screenshot of the home page",
+      "form_factor": "wide"
+    },
+    {
+      "src": "https://www.pwabuilder.com/assets/screenshots/screen1.png",
+      "sizes": "1630x918",
+      "type": "image/png",
+      "description": "A screenshot of the home page"
+    }
+  ]
+}

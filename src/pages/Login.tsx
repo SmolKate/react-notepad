@@ -61,8 +61,11 @@ const Login = () => {
                 value={values.password}
                 error={errors?.password}
             />
-            <Button type="submit">Войти</Button>
-            <Button onClick={handleRegistrationClick}>Зарегистрироваться</Button>
+            <div className="login-btns">
+                <Button type="submit">Войти</Button>
+                <Button onClick={handleRegistrationClick}>Зарегистрироваться</Button>
+            </div>
+            
         </form>
     )
 }
