@@ -1,0 +1,6 @@
+.delete-popup-btns {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    padding: 15px;
+}

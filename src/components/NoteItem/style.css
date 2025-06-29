@@ -1,0 +1,31 @@
+.note-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px;
+    margin-left: -15px;
+    border-bottom: 2px solid rgb(127, 113, 131);
+
+    .item-title, .item-content {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+    }
+}
+
+.note-item-workspace {
+    width: 100%;
+    border: none;
+    margin: 15px;
+}
+
+.note-item:last-child {
+    border: none;
+    padding-bottom: 0;
+}
+
+.note-item-active {
+    background-color: rgb(23, 18, 27, 0.1);
+}

@@ -1,0 +1,27 @@
+.workspace {
+    min-height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding-left: 15px;
+    padding-top: 15px;
+}
+
+.btns {
+    display: flex;
+    gap: 16px;
+    align-self: end;
+}
+
+.workspace-note-content {
+    flex: 1;
+}
+
+
+.delete-popup-btns {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    padding: 15px;
+}
