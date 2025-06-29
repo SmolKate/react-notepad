@@ -40,8 +40,8 @@ const Registration = () => {
     }, validators)
 
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
         const { name, email, password, repeat_password} = values
         if (password && repeat_password && password !==repeat_password) {
             setPasswordError('Пароли должны совпадать')

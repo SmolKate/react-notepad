@@ -28,9 +28,9 @@ const Login = () => {
         password: '',
     }, validators)
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement | undefined>) => {
-        e.preventDefault()
-        const formData = new FormData(e.currentTarget)
+    const handleSubmit = (event: FormEvent<HTMLFormElement | undefined>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
         const userEmail = formData.get('email') as string
         const userPassword = formData.get('password') as string
         auth?.signin(userEmail.toLowerCase(), userPassword, () => {
